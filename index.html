@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Tracker Pro</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Wrapper containing both the Card and the Mascot */
+        .main-wrapper {
+            display: flex;
+            align-items: flex-end;
+            gap: 20px;
+            max-width: 850px;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Mascot Container */
+        .mascot-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        /* Speech Bubble above Mascot's hand */
+        .speech-bubble {
+            background: #ffffff;
+            color: #1e3c72;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 13px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border: 2px solid #38ef7d;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            position: relative;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: #ffffff transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Cartoon Student Illustration */
+        .mascot-img {
+            width: 170px;
+            height: auto;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+        }
+
+        /* Main Card */
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            flex: 1;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #1e3c72;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            color: #666;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Feedback Banner */
+        .feedback-banner {
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .feedback-excellent { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .feedback-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .feedback-alert { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* Dashboard Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-box span {
+            display: block;
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .stat-box strong {
+            font-size: 16px;
+            color: #1e293b;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 8px;
+            width: 100%;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #11998e, #38ef7d);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Inputs */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        input[type="text"] { flex: 2; }
+        input[type="number"] { flex: 1; }
+
+        button.add-btn {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button.add-btn:hover { background: #2a5298; }
+
+        /* List Items */
+        ul {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        li {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li.completed {
+            background: #f1f5f9;
+            opacity: 0.7;
+        }
+
+        li.completed .task-title {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: #334155;
+            font-size: 14px;
+        }
+
+        .task-meta {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+
+        .delete-btn:hover { background: #dc2626; }
+
+        /* Animation for Speech Bubble */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        /* Responsive design for small screens */
+        @media (max-width: 650px) {
+            .main-wrapper {
+                flex-direction: column-reverse;
+                align-items: center;
+            }
+            .mascot-container {
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+
+    <!-- Cartoon Mascot Side Section -->
+    <div class="mascot-container">
+        <div class="speech-bubble">Organize Your Time! ⏱️</div>
+        <!-- SVG Vector Character of a Student Raising Hand -->
+        <svg class="mascot-img" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Body/Shirt -->
+            <path d="M60 170 C60 140, 140 140, 140 170 L150 240 L50 240 Z" fill="#38ef7d"/>
+            <!-- Neck -->
+            <rect x="90" y="125" width="20" height="20" fill="#fbc02d" rx="5"/>
+            <!-- Head -->
+            <circle cx="100" cy="95" r="35" fill="#ffcc80"/>
+            <!-- Hair -->
+            <path d="M65 90 C65 60, 135 60, 135 90 C120 70, 80 70, 65 90 Z" fill="#42210b"/>
+            <!-- Eyes -->
+            <circle cx="88" cy="92" r="4" fill="#212121"/>
+            <circle cx="112" cy="92" r="4" fill="#212121"/>
+            <!-- Smile -->
+            <path d="M88 110 Q100 122 112 110" stroke="#212121" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <!-- Glasses -->
+            <circle cx="88" cy="92" r="10" stroke="#1e3c72" stroke-width="2" fill="none"/>
+            <circle cx="112" cy="92" r="10" stroke="#1e3c72" stroke-width="2" fill="none"/>
+            <line x1="98" y1="92" x2="102" y2="92" stroke="#1e3c72" stroke-width="2"/>
+            <!-- Raised Hand pointing to the card -->
+            <path d="M130 150 L170 80 C175 70, 185 75, 180 85 L145 160 Z" fill="#ffcc80"/>
+            <circle cx="175" cy="78" r="8" fill="#ffcc80"/> <!-- Hand Palm -->
+            <!-- Sleeve -->
+            <path d="M125 145 L140 160 L120 168 Z" fill="#2e7d32"/>
+        </svg>
+    </div>
+
+    <!-- Main Application Card -->
+    <div class="card">
+        <h1>Study Tracker Pro</h1>
+        <p class="subtitle">Track your study time and daily goals</p>
+
+        <!-- Evaluation Banner -->
+        <div id="feedbackBanner" class="feedback-banner"></div>
+
+        <!-- Dashboard Statistics -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span>Tasks Completed</span>
+                <strong id="taskStats">0 / 0</strong>
+            </div>
+            <div class="stat-box">
+                <span>Total Study Time</span>
+                <strong id="timeStats">0 mins</strong>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Inputs -->
+        <div class="input-group">
+            <div class="input-row">
+                <input type="text" id="taskInput" placeholder="Write Your Task?">
+                <input type="number" id="timeInput" placeholder="Mins of Task" min="1">
+            </div>
+            <button class="add-btn" onclick="addTask()">Add</button>
+        </div>
+
+        <!-- Task List -->
+        <ul id="taskList"></ul>
+    </div>
+
+</div>
+
+<script>
+    let totalTasks = 0;
+    let completedTasks = 0;
+    let totalMinutes = 0;
+
+    function addTask() {
+        let taskInput = document.getElementById("taskInput");
+        let timeInput = document.getElementById("timeInput");
+
+        let taskText = taskInput.value.trim();
+        let studyMins = parseInt(timeInput.value.trim()) || 0;
+
+        if (taskText === "") return;
+
+        let now = new Date();
+        let timeString = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + 
+                         " at " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        let li = document.createElement("li");
+        
+        let taskInfo = document.createElement("div");
+        taskInfo.className = "task-info";
+
+        let titleSpan = document.createElement("span");
+        titleSpan.className = "task-title";
+        titleSpan.textContent = taskText;
+
+        let metaSpan = document.createElement("span");
+        metaSpan.className = "task-meta";
+        metaSpan.textContent = `⏱️ ${studyMins} mins | 📅 ${timeString}`;
+
+        taskInfo.appendChild(titleSpan);
+        taskInfo.appendChild(metaSpan);
+
+        taskInfo.onclick = function() {
+            li.classList.toggle("completed");
+            if (li.classList.contains("completed")) {
+                completedTasks++;
+            } else {
+                completedTasks--;
+            }
+            updateDashboard();
+        };
+
+        let delBtn = document.createElement("button");
+        delBtn.textContent = "✕";
+        delBtn.className = "delete-btn";
+        delBtn.onclick = function() {
+            if (li.classList.contains("completed")) {
+                completedTasks--;
+            }
+            totalTasks--;
+            totalMinutes -= studyMins;
+            li.remove();
+            updateDashboard();
+        };
+
+        li.appendChild(taskInfo);
+        li.appendChild(delBtn);
+        document.getElementById("taskList").appendChild(li);
+
+        totalTasks++;
+        totalMinutes += studyMins;
+
+        taskInput.value = "";
+        timeInput.value = "";
+        updateDashboard();
+    }
+
+    function updateDashboard() {
+        document.getElementById("taskStats").textContent = `${completedTasks} / ${totalTasks}`;
+        document.getElementById("timeStats").textContent = `${totalMinutes} mins`;
+
+        let percentage = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+        document.getElementById("progressBar").style.width = percentage + "%";
+
+        let banner = document.getElementById("feedbackBanner");
+        banner.style.display = "block";
+
+        if (totalTasks === 0) {
+            banner.className = "feedback-banner feedback-alert";
+            banner.textContent = "⚠️ No study tasks logged yet. Time to focus!";
+        } else if (percentage >= 80) {
+            banner.className = "feedback-banner feedback-excellent";
+            banner.textContent = "🌟 Excellent! Outstanding performance today!";
+        } else if (percentage >= 50) {
+            banner.className = "feedback-banner feedback-warning";
+            banner.textContent = "👍 Good progress, keep pushing to finish remaining tasks!";
+        } else {
+            banner.className = "feedback-banner feedback-alert";
+            banner.textContent = "⚠️ Completion rate is low! Work harder to reach your goal!";
+        }
+    }
+
+    updateDashboard();
+</script>
+
+</body>
+</html>
