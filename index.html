@@ -290,6 +290,40 @@
     width: 95% !important;
   }
 }
+        /* إجبار الصفحة والبطاقات على التجاوب التام مع الشاشات الصغيرة */
+* {
+  box-sizing: border-box !important;
+}
+
+body {
+  margin: 0 !important;
+  padding: 10px !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* ضبط البطاقة الرئيسية لتتوسط الشاشة تماماً بدون قص */
+.container, div[class*="card"], div[class*="box"] {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 auto 20px auto !important;
+  padding: 15px !important;
+}
+
+/* جعل خانات الكتابة تنزل تحت بعضها وتاخد العرض الكامل للموبايل */
+@media (max-width: 600px) {
+  form, .input-group, div:has(> input) {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  input, button {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+}
     </style>
 </head>
 <body>
