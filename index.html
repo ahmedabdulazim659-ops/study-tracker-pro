@@ -271,6 +271,25 @@
                 margin-bottom: 0;
             }
         }
+        @media (max-width: 600px) {
+
+  .input-group, .inputs-container {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  input {
+    width: 100% !important;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+  }
+
+  /* ضبط الحاويات الخارجية للتأكد من المحاذاة */
+  .container {
+    padding: 10px !important;
+    width: 95% !important;
+  }
+}
     </style>
 </head>
 <body>
