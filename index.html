@@ -263,27 +263,41 @@
 }
 
 /* تحسين زرار الحذف ليصبح أيكونة مربعة شيك ومريحة للعين */
+/* 1. ضبط كارت المهمة ليصبح منظم وأفقي */
+li {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 10px 14px !important;
+  gap: 12px !important;
+}
+
+/* 2. تحجيم زرار الحذف ليصبح مربع صغير وأنيق جداً */
 .delete-btn {
-  background-color: #ef4444 !important;
-  color: #ffffff !important;
-  border: none !important;
-  border-radius: 8px !important;
   width: 32px !important;
   height: 32px !important;
   min-width: 32px !important;
+  max-width: 32px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+  background-color: #fee2e2 !important;
+  color: #ef4444 !important;
+  border: none !important;
+  border-radius: 8px !important;
   cursor: pointer !important;
+  font-size: 1.1rem !important;
   font-weight: bold !important;
-  font-size: 0.9rem !important;
-  margin-left: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
   flex-shrink: 0 !important;
 }
 
 .delete-btn:hover {
-  background-color: #ef4444;
-  color: #ffffff;
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
 }
 
         /* Animation for Speech Bubble */
