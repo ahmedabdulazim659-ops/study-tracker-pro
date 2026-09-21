@@ -1,546 +1,693 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Tracker Pro</title>
-    
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Tracker Pro</title>
+  
+  <!-- CSS Styles -->
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+    body {
+      background-color: #1b3b6f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px 10px;
+    }
 
-        /* Wrapper containing both the Card and the Mascot */
-        .main-wrapper {
-            display: flex;
-            align-items: flex-end;
-            gap: 20px;
-            max-width: 850px;
-            width: 100%;
-            position: relative;
-        }
+    .container {
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
 
-        /* Mascot Container */
-        .mascot-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            margin-bottom: 10px;
-        }
+    h1 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 16px;
+      font-size: 1.5rem;
+    }
 
-        /* Speech Bubble above Mascot's hand */
-        .speech-bubble {
-            background: #ffffff;
-            color: #1e3c72;
-            padding: 10px 16px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 13px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            border: 2px solid #38ef7d;
-            margin-bottom: 10px;
-            white-space: nowrap;
-            position: relative;
-            animation: bounce 2s infinite ease-in-out;
-        }
+    /* Feedback Banner */
+    .banner {
+      background-color: #fef2f2;
+      color: #991b1b;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-align: center;
+    }
 
-        .speech-bubble::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 10px 10px 0;
-            border-style: solid;
-            border-color: #ffffff transparent;
-            display: block;
-            width: 0;
-        }
+    /* Stats */
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
 
-        /* Cartoon Student Illustration */
-        .mascot-img {
-            width: 170px;
-            height: auto;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
-        }
+    .stat-card p {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
 
-        /* Main Card */
-        .card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            flex: 1;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
+    .stat-card h3 {
+      font-size: 1.2rem;
+      color: #111827;
+      margin-top: 4px;
+    }
 
-        h1 {
-            color: #1e3c72;
-            font-size: 24px;
-            text-align: center;
-            margin-bottom: 5px;
-        }
+    /* Progress Bar */
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background-color: #e5e7eb;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
 
-        p.subtitle {
-            color: #666;
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background-color: #10b981;
+      transition: width 0.3s ease;
+    }
 
-        /* Feedback Banner */
-        .feedback-banner {
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 15px;
-            display: none;
-        }
-        .feedback-excellent { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .feedback-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .feedback-alert { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    /* Inputs Form */
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
 
-        /* Dashboard Statistics */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #e2e8f0;
-        }
+    .form-container input {
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+    }
 
-        .stat-box {
-            text-align: center;
-        }
+    #addBtn {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
 
-        .stat-box span {
-            display: block;
-            font-size: 11px;
-            color: #64748b;
-        }
+    #addBtn:hover {
+      background-color: #1d4ed8;
+    }
 
-        .stat-box strong {
-            font-size: 16px;
-            color: #1e293b;
-        }
+    /* History Button */
+    .history-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #4f46e5, #3b82f6);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
 
-        /* Progress Bar */
-        .progress-container {
-            background: #e2e8f0;
-            border-radius: 10px;
-            height: 8px;
-            width: 100%;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
+    /* Task List */
+    #taskList {
+      list-style: none;
+    }
 
-        .progress-bar {
-            background: linear-gradient(90deg, #11998e, #38ef7d);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
+    li {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      width: 100% !important;
+      background-color: #f9fafb;
+      border: 1px solid #f3f4f6;
+      border-radius: 12px;
+      padding: 10px 14px !important;
+      margin-bottom: 10px !important;
+      gap: 10px !important;
+    }
 
-        /* Inputs */
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
+    li.completed {
+      opacity: 0.6;
+      text-decoration: line-through;
+    }
 
-        .input-row {
-            display: flex;
-            gap: 8px;
-        }
+    .task-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      flex-grow: 1;
+    }
 
-        input[type="text"], input[type="number"] {
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            outline: none;
-            font-size: 13px;
-        }
+    .task-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #1f2937;
+    }
 
-        input[type="text"] { flex: 2; }
-        input[type="number"] { flex: 1; }
+    .task-meta {
+      font-size: 0.8rem;
+      color: #6b7280;
+      white-space: nowrap;
+    }
 
-        button.add-btn {
-            background: #1e3c72;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+    /* Delete Button Styling */
+    .delete-btn {
+      width: 32px !important;
+      height: 32px !important;
+      min-width: 32px !important;
+      max-width: 32px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background-color: #fee2e2 !important;
+      color: #ef4444 !important;
+      border: none !important;
+      border-radius: 8px !important;
+      cursor: pointer !important;
+      font-size: 1.1rem !important;
+      font-weight: bold !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      flex-shrink: 0 !important;
+    }
 
-        button.add-btn:hover { background: #2a5298; }
+    .delete-btn:hover {
+      background-color: #ef4444 !important;
+      color: #ffffff !important;
+    }
 
-        /* List Items */
-        ul {
-            list-style: none;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        li {
-              display: flex !important;
-              align-items: center !important;
-              justify-content: space-between !important;
-              padding: 10px 14px !important;
-              margin-bottom: 8px !important;
-            }
+    /* Mascot */
+    .mascot-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
 
-        li.completed {
-            background: #f1f5f9;
-            opacity: 0.7;
-        }
+    .speech-bubble {
+      background-color: #ffffff;
+      border: 1.5px solid #10b981;
+      color: #065f46;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
 
-        li.completed .task-title {
-            text-decoration: line-through;
-            color: #94a3b8;
-        }
+    .mascot {
+      font-size: 2.5rem;
+    }
 
-        /* تنسيق كارت المهمة */
-.task-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eef2f5;
-}
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+    }
 
-/* الجزء الخاص بمعلومات المهمة (الاسم، الوقت، التاريخ) */
-.task-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+    .modal-content {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 480px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
 
-.task-title {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #2c3e50;
-}
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
 
-/* تنسيق الوقت والتاريخ بجانب بعض في سطر واحد */
-.task-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.85rem;
-  color: #6c757d;
-  white-space: nowrap; /* يمنع نزول النص في سطر جديد */
-}
+    .close-modal {
+      font-size: 24px;
+      cursor: pointer;
+      color: #6b7280;
+    }
 
-.task-meta-item {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
+    .history-filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
 
-/* تحسين زرار الحذف ليصبح أيكونة مربعة شيك ومريحة للعين */
-/* 1. ضبط كارت المهمة ليصبح منظم وأفقي */
-li {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  padding: 10px 14px !important;
-  gap: 12px !important;
-}
+    .history-filters select {
+      flex: 1;
+      min-width: 90px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      color: #1f2937 !important;
+      background-color: #ffffff !important;
+      font-weight: 600 !important;
+      font-size: 0.85rem !important;
+    }
 
-/* 2. تحجيم زرار الحذف ليصبح مربع صغير وأنيق جداً */
-.delete-btn {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  max-width: 32px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background-color: #fee2e2 !important;
-  color: #ef4444 !important;
-  border: none !important;
-  border-radius: 8px !important;
-  cursor: pointer !important;
-  font-size: 1.1rem !important;
-  font-weight: bold !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  flex-shrink: 0 !important;
-}
+    .day-summary {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      text-align: center;
+      font-weight: 600;
+    }
 
-.delete-btn:hover {
-  background-color: #ef4444 !important;
-  color: #ffffff !important;
-}
+    .history-card {
+      background-color: #f9fafb;
+      border-left: 4px solid #3b82f6;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
 
-        /* Animation for Speech Bubble */
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
+    .history-card h4 {
+      margin: 0 0 6px 0;
+      color: #1f2937;
+    }
 
-        /* Responsive design for small screens */
-        @media (max-width: 650px) {
-            .main-wrapper {
-                flex-direction: column-reverse;
-                align-items: center;
-            }
-            .mascot-container {
-                margin-bottom: 0;
-            }
-        }
-        @media (max-width: 600px) {
+    .history-card p {
+      margin: 3px 0;
+      font-size: 0.85rem;
+      color: #4b5563;
+    }
 
-  .input-group, .inputs-container {
-    flex-direction: column !important;
-    width: 100% !important;
-  }
-
-  input {
-    width: 100% !important;
-    box-sizing: border-box;
-    margin-bottom: 8px;
-  }
-
-  /* ضبط الحاويات الخارجية للتأكد من المحاذاة */
-  .container {
-    padding: 10px !important;
-    width: 95% !important;
-  }
-}
-        /* إجبار الصفحة والبطاقات على التجاوب التام مع الشاشات الصغيرة */
-* {
-  box-sizing: border-box !important;
-}
-
-body {
-  margin: 0 !important;
-  padding: 10px !important;
-  width: 100% !important;
-  overflow-x: hidden !important;
-}
-
-/* ضبط البطاقة الرئيسية لتتوسط الشاشة تماماً بدون قص */
-.container, div[class*="card"], div[class*="box"] {
-  max-width: 100% !important;
-  width: 100% !important;
-  margin: 0 auto 20px auto !important;
-  padding: 15px !important;
-}
-
-/* جعل خانات الكتابة تنزل تحت بعضها وتاخد العرض الكامل للموبايل */
-@media (max-width: 600px) {
-  form, .input-group, div:has(> input) {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 10px !important;
-  }
-
-  input, button {
-    width: 100% !important;
-    margin: 0 !important;
-  }
-}
-    </style>
+    .placeholder-text {
+      text-align: center;
+      color: #9ca3af;
+      font-size: 0.85rem;
+      padding: 20px 0;
+    }
+  </style>
 </head>
 <body>
 
-<div class="main-wrapper">
+  <div class="container">
+    <h1>Study Tracker Pro</h1>
 
-    <!-- Cartoon Mascot Side Section -->
+    <!-- Feedback Banner -->
+    <div id="feedbackBanner" class="banner">
+      ⚠️ Completion rate is low! Work harder to reach your goal!
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <p>Tasks Completed</p>
+        <h3 id="completedCount">0 / 0</h3>
+      </div>
+      <div class="stat-card">
+        <p>Total Study Time</p>
+        <h3 id="totalMins">0 mins</h3>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar-container">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+
+    <!-- Task Form -->
+    <div class="form-container">
+      <input type="text" id="taskInput" placeholder="Write Your Task?">
+      <input type="number" id="minsInput" placeholder="Mins of Task">
+      <button id="addBtn">Add Task</button>
+    </div>
+
+    <!-- Study History Button -->
+    <button id="historyBtn" class="history-btn">📊 Study History</button>
+
+    <!-- Task List -->
+    <ul id="taskList"></ul>
+
+    <!-- Footer Mascot -->
     <div class="mascot-container">
-        <div class="speech-bubble">Organize Your Time! ⏱️</div>
-        <!-- SVG Vector Character of a Student Raising Hand -->
-        <svg class="mascot-img" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Body/Shirt -->
-            <path d="M60 170 C60 140, 140 140, 140 170 L150 240 L50 240 Z" fill="#38ef7d"/>
-            <!-- Neck -->
-            <rect x="90" y="125" width="20" height="20" fill="#fbc02d" rx="5"/>
-            <!-- Head -->
-            <circle cx="100" cy="95" r="35" fill="#ffcc80"/>
-            <!-- Hair -->
-            <path d="M65 90 C65 60, 135 60, 135 90 C120 70, 80 70, 65 90 Z" fill="#42210b"/>
-            <!-- Eyes -->
-            <circle cx="88" cy="92" r="4" fill="#212121"/>
-            <circle cx="112" cy="92" r="4" fill="#212121"/>
-            <!-- Smile -->
-            <path d="M88 110 Q100 122 112 110" stroke="#212121" stroke-width="3" stroke-linecap="round" fill="none"/>
-            <!-- Glasses -->
-            <circle cx="88" cy="92" r="10" stroke="#1e3c72" stroke-width="2" fill="none"/>
-            <circle cx="112" cy="92" r="10" stroke="#1e3c72" stroke-width="2" fill="none"/>
-            <line x1="98" y1="92" x2="102" y2="92" stroke="#1e3c72" stroke-width="2"/>
-            <!-- Raised Hand pointing to the card -->
-            <path d="M130 150 L170 80 C175 70, 185 75, 180 85 L145 160 Z" fill="#ffcc80"/>
-            <circle cx="175" cy="78" r="8" fill="#ffcc80"/> <!-- Hand Palm -->
-            <!-- Sleeve -->
-            <path d="M125 145 L140 160 L120 168 Z" fill="#2e7d32"/>
-        </svg>
+      <div class="speech-bubble">Organize Your Time! ⏱️</div>
+      <div class="mascot">👦</div>
     </div>
+  </div>
 
-    <!-- Main Application Card -->
-    <div class="card">
-        <h1>Study Tracker Pro</h1>
-        <p class="subtitle">Track your study time and daily goals</p>
+  <!-- Study History Modal -->
+  <div id="historyModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📅 Study History Log</h2>
+        <span class="close-modal" id="closeHistoryModal">&times;</span>
+      </div>
+      
+      <!-- Filters -->
+      <div class="history-filters">
+        <select id="yearSelect">
+          <option value="">Select Year</option>
+        </select>
+        
+        <select id="monthSelect" disabled>
+          <option value="">Select Month</option>
+        </select>
 
-        <!-- Evaluation Banner -->
-        <div id="feedbackBanner" class="feedback-banner"></div>
+        <select id="daySelect" disabled>
+          <option value="">Select Day</option>
+        </select>
+      </div>
 
-        <!-- Dashboard Statistics -->
-        <div class="stats-grid">
-            <div class="stat-box">
-                <span>Tasks Completed</span>
-                <strong id="taskStats">0 / 0</strong>
-            </div>
-            <div class="stat-box">
-                <span>Total Study Time</span>
-                <strong id="timeStats">0 mins</strong>
-            </div>
-        </div>
+      <!-- Day Summary -->
+      <div id="daySummary" class="day-summary" style="display: none;">
+        <p>⏱️ Total Study Time: <strong id="totalTimeText">0 mins</strong></p>
+      </div>
 
-        <!-- Progress Bar -->
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-
-        <!-- Inputs -->
-        <div class="input-group">
-            <div class="input-row">
-                <input type="text" id="taskInput" placeholder="Write Your Task?">
-                <input type="number" id="timeInput" placeholder="Mins of Task" min="1">
-            </div>
-            <button class="add-btn" onclick="addTask()">Add</button>
-        </div>
-
-        <!-- Task List -->
-        <ul id="taskList"></ul>
+      <!-- History Cards Container -->
+      <div id="historyDisplayArea" class="history-display-area">
+        <p class="placeholder-text">Please select a year, month, and day to view logs.</p>
+      </div>
     </div>
+  </div>
 
-</div>
-
-<script>
+  <!-- JavaScript Logic -->
+  <script>
+    // Global State Variables
     let totalTasks = 0;
     let completedTasks = 0;
     let totalMinutes = 0;
 
-    function addTask() {
-        let taskInput = document.getElementById("taskInput");
-        let timeInput = document.getElementById("timeInput");
+    // Main UI Elements
+    const taskInput = document.getElementById("taskInput");
+    const minsInput = document.getElementById("minsInput");
+    const addBtn = document.getElementById("addBtn");
+    const taskList = document.getElementById("taskList");
 
-        let taskText = taskInput.value.trim();
-        let studyMins = parseInt(timeInput.value.trim()) || 0;
+    const completedCount = document.getElementById("completedCount");
+    const totalMins = document.getElementById("totalMins");
+    const progressBar = document.getElementById("progressBar");
 
-        if (taskText === "") return;
+    // History Modal Elements
+    const historyBtn = document.getElementById("historyBtn");
+    const historyModal = document.getElementById("historyModal");
+    const closeHistoryModal = document.getElementById("closeHistoryModal");
 
-        let now = new Date();
-        let timeString = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + 
-                         " at " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const yearSelect = document.getElementById("yearSelect");
+    const monthSelect = document.getElementById("monthSelect");
+    const daySelect = document.getElementById("daySelect");
+    const daySummary = document.getElementById("daySummary");
+    const totalTimeText = document.getElementById("totalTimeText");
+    const historyDisplayArea = document.getElementById("historyDisplayArea");
 
-        let li = document.createElement("li");
-        
-        let taskInfo = document.createElement("div");
-        taskInfo.className = "task-info";
-
-        let titleSpan = document.createElement("span");
-        titleSpan.className = "task-title";
-        titleSpan.textContent = taskText;
-
-        let metaSpan = document.createElement("span");
-        metaSpan.className = "task-meta";
-        metaSpan.textContent = `⏱️ ${studyMins} mins | 📅 ${timeString}`;
-
-        taskInfo.appendChild(titleSpan);
-        taskInfo.appendChild(metaSpan);
-
-        taskInfo.onclick = function() {
-            li.classList.toggle("completed");
-            if (li.classList.contains("completed")) {
-                completedTasks++;
-            } else {
-                completedTasks--;
-            }
-            updateDashboard();
-        };
-
-        let delBtn = document.createElement("button");
-        delBtn.textContent = "✕";
-        delBtn.className = "delete-btn";
-        delBtn.onclick = function() {
-            if (li.classList.contains("completed")) {
-                completedTasks--;
-            }
-            totalTasks--;
-            totalMinutes -= studyMins;
-            li.remove();
-            updateDashboard();
-        };
-
-        li.appendChild(taskInfo);
-        li.appendChild(delBtn);
-        document.getElementById("taskList").appendChild(li);
-
-        totalTasks++;
-        totalMinutes += studyMins;
-
-        taskInput.value = "";
-        timeInput.value = "";
-        updateDashboard();
+    // Helper: Format Time Exactly Matching System Clock
+    function getSystemFormattedTime(nowDate) {
+      let hours = nowDate.getHours();
+      const minutesStr = nowDate.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      return `${hours}:${minutesStr} ${ampm}`;
     }
 
-    function updateDashboard() {
-        document.getElementById("taskStats").textContent = `${completedTasks} / ${totalTasks}`;
-        document.getElementById("timeStats").textContent = `${totalMinutes} mins`;
+    // 1. Add Task Event
+    addBtn.addEventListener("click", function() {
+      const name = taskInput.value.trim();
+      const mins = parseInt(minsInput.value);
 
-        let percentage = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
-        document.getElementById("progressBar").style.width = percentage + "%";
+      if (!name || isNaN(mins) || mins <= 0) {
+        alert("Please enter a valid task name and minutes!");
+        return;
+      }
 
-        let banner = document.getElementById("feedbackBanner");
-        banner.style.display = "block";
+      // Add Element to Main List
+      createTaskElement(name, mins);
 
-        if (totalTasks === 0) {
-            banner.className = "feedback-banner feedback-alert";
-            banner.textContent = "⚠️ No study tasks logged yet. Time to focus!";
-        } else if (percentage >= 80) {
-            banner.className = "feedback-banner feedback-excellent";
-            banner.textContent = "🌟 Excellent! Outstanding performance today!";
-        } else if (percentage >= 50) {
-            banner.className = "feedback-banner feedback-warning";
-            banner.textContent = "👍 Good progress, keep pushing to finish remaining tasks!";
+      // Save dynamic values to LocalStorage History
+      saveTaskToHistory(name, mins);
+
+      // Update Statistics
+      totalTasks++;
+      totalMinutes += mins;
+      updateDashboard();
+
+      // Reset Inputs
+      taskInput.value = "";
+      minsInput.value = "";
+    });
+
+    // 2. Create Task Item UI
+    function createTaskElement(name, studyMins) {
+      const li = document.createElement("li");
+
+      const now = new Date();
+      const currentTimeStr = getSystemFormattedTime(now);
+      const formattedDate = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${currentTimeStr}`;
+
+      const taskInfo = document.createElement("div");
+      taskInfo.className = "task-info";
+      taskInfo.innerHTML = `
+        <div class="task-title">${name}</div>
+        <div class="task-meta">⏱️ ${studyMins} mins | 📅 ${formattedDate}</div>
+      `;
+
+      // Toggle Complete
+      taskInfo.addEventListener("click", function() {
+        li.classList.toggle("completed");
+        if (li.classList.contains("completed")) {
+          completedTasks++;
         } else {
-            banner.className = "feedback-banner feedback-alert";
-            banner.textContent = "⚠️ Completion rate is low! Work harder to reach your goal!";
+          completedTasks--;
         }
+        updateDashboard();
+      });
+
+      // Delete Button (x)
+      const delBtn = document.createElement("button");
+      delBtn.className = "delete-btn";
+      delBtn.innerHTML = "&times;";
+      delBtn.onclick = function(e) {
+        e.stopPropagation();
+        if (li.classList.contains("completed")) {
+          completedTasks--;
+        }
+        totalTasks--;
+        totalMinutes -= studyMins;
+        li.remove();
+        updateDashboard();
+      };
+
+      li.appendChild(taskInfo);
+      li.appendChild(delBtn);
+      taskList.appendChild(li);
     }
 
-    updateDashboard();
-</script>
+    // 3. Update Stats & Progress Bar
+    function updateDashboard() {
+      completedCount.textContent = `${completedTasks} / ${totalTasks}`;
+      totalMins.textContent = `${totalMinutes} mins`;
+      const percentage = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
+      progressBar.style.width = `${percentage}%`;
+    }
 
+    // 4. Save Task to LocalStorage
+    function saveTaskToHistory(taskName, minutes) {
+      const now = new Date();
+      const currentTimeStr = getSystemFormattedTime(now);
+
+      const historyItem = {
+        id: Date.now(),
+        title: taskName,
+        duration: parseInt(minutes),
+        year: now.getFullYear().toString(),
+        month: (now.getMonth() + 1).toString().padStart(2, '0'),
+        day: now.getDate().toString().padStart(2, '0'),
+        dayName: now.toLocaleDateString('en-US', { weekday: 'long' }),
+        time: currentTimeStr,
+        fullDate: now.toLocaleDateString('en-US')
+      };
+
+      let fullHistory = JSON.parse(localStorage.getItem("studyHistory")) || [];
+      fullHistory.push(historyItem);
+      localStorage.setItem("studyHistory", JSON.stringify(fullHistory));
+    }
+
+    // 5. Open Modal
+    historyBtn.onclick = function() {
+      historyModal.style.display = "flex";
+      populateYearDropdown();
+    };
+
+    closeHistoryModal.onclick = function() {
+      historyModal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+      if (event.target == historyModal) {
+        historyModal.style.display = "none";
+      }
+    };
+
+    // Populate Year Filter
+    function populateYearDropdown() {
+      const fullHistory = JSON.parse(localStorage.getItem("studyHistory")) || [];
+      const years = [...new Set(fullHistory.map(item => item.year))];
+      
+      yearSelect.innerHTML = '<option value="">Select Year</option>';
+      monthSelect.innerHTML = '<option value="">Select Month</option>';
+      daySelect.innerHTML = '<option value="">Select Day</option>';
+      monthSelect.disabled = true;
+      daySelect.disabled = true;
+      daySummary.style.display = "none";
+
+      years.forEach(year => {
+        const opt = document.createElement("option");
+        opt.value = year;
+        opt.textContent = year;
+        yearSelect.appendChild(opt);
+      });
+    }
+
+    // Filter Year -> Enable Month
+    yearSelect.onchange = function() {
+      const selectedYear = this.value;
+      monthSelect.innerHTML = '<option value="">Select Month</option>';
+      daySelect.innerHTML = '<option value="">Select Day</option>';
+      daySelect.disabled = true;
+      daySummary.style.display = "none";
+      
+      if (!selectedYear) {
+        monthSelect.disabled = true;
+        historyDisplayArea.innerHTML = '<p class="placeholder-text">Please select a year, month, and day to view logs.</p>';
+        return;
+      }
+
+      const fullHistory = JSON.parse(localStorage.getItem("studyHistory")) || [];
+      const months = [...new Set(fullHistory.filter(i => i.year === selectedYear).map(i => i.month))];
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+      months.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = monthNames[parseInt(m) - 1];
+        monthSelect.appendChild(opt);
+      });
+
+      monthSelect.disabled = false;
+    };
+
+    // Filter Month -> Enable Day
+    monthSelect.onchange = function() {
+      const selectedYear = yearSelect.value;
+      const selectedMonth = this.value;
+
+      daySelect.innerHTML = '<option value="">Select Day</option>';
+      daySummary.style.display = "none";
+
+      if (!selectedMonth) {
+        daySelect.disabled = true;
+        return;
+      }
+
+      const fullHistory = JSON.parse(localStorage.getItem("studyHistory")) || [];
+      const days = [...new Set(fullHistory.filter(i => i.year === selectedYear && i.month === selectedMonth).map(i => i.day))];
+
+      days.sort((a, b) => a - b).forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = `Day ${d}`;
+        daySelect.appendChild(opt);
+      });
+
+      daySelect.disabled = false;
+    };
+
+    // Filter Day -> Show Cards & Calculated Time
+    daySelect.onchange = function() {
+      const selectedYear = yearSelect.value;
+      const selectedMonth = monthSelect.value;
+      const selectedDay = this.value;
+
+      if (!selectedDay) {
+        daySummary.style.display = "none";
+        historyDisplayArea.innerHTML = '<p class="placeholder-text">Please select a day to view sessions.</p>';
+        return;
+      }
+
+      const fullHistory = JSON.parse(localStorage.getItem("studyHistory")) || [];
+      const filtered = fullHistory.filter(i => 
+        i.year === selectedYear && 
+        i.month === selectedMonth && 
+        i.day === selectedDay
+      );
+
+      if (filtered.length === 0) {
+        historyDisplayArea.innerHTML = '<p class="placeholder-text">No study sessions logged for this day.</p>';
+        daySummary.style.display = "none";
+        return;
+      }
+
+      // Calculate Total Time
+      const totalMinsForDay = filtered.reduce((acc, curr) => acc + (curr.duration || 0), 0);
+      const hrs = Math.floor(totalMinsForDay / 60);
+      const mins = totalMinsForDay % 60;
+      
+      let formattedTime = "";
+      if (hrs > 0) formattedTime += `${hrs} hr `;
+      formattedTime += `${mins} mins`;
+
+      totalTimeText.textContent = formattedTime;
+      daySummary.style.display = "block";
+
+      let html = '';
+      filtered.slice().reverse().forEach(item => {
+        html += `
+          <div class="history-card">
+            <h4>📘 ${item.title}</h4>
+            <p>⏱️ <strong>Duration:</strong> ${item.duration} mins</p>
+            <p>📅 <strong>Day:</strong> ${item.dayName} (${item.fullDate})</p>
+            <p>⏰ <strong>Time Added:</strong> ${item.time}</p>
+          </div>
+        `;
+      });
+
+      historyDisplayArea.innerHTML = html;
+    };
+  </script>
 </body>
 </html>
