@@ -41,14 +41,15 @@
 
     /* Feedback Banner */
     .banner {
-      background-color: #fef2f2;
-      color: #991b1b;
+      background-color: #eff6ff;
+      color: #1e40af;
       padding: 10px 14px;
       border-radius: 10px;
       font-size: 0.85rem;
       font-weight: 600;
       margin-bottom: 16px;
       text-align: center;
+      transition: all 0.3s ease;
     }
 
     /* Stats */
@@ -330,9 +331,9 @@
   <div class="container">
     <h1>Study Tracker Pro</h1>
 
-    <!-- Feedback Banner -->
+    <!-- Dynamic Feedback Banner -->
     <div id="feedbackBanner" class="banner">
-      ⚠️ Completion rate is low! Work harder to reach your goal!
+      🚀 Add your first task to start!
     </div>
 
     <!-- Dashboard Cards -->
@@ -423,6 +424,7 @@
     const completedCount = document.getElementById("completedCount");
     const totalMins = document.getElementById("totalMins");
     const progressBar = document.getElementById("progressBar");
+    const feedbackBanner = document.getElementById("feedbackBanner"); // <-- تم إضافة العنصر هنا
 
     // History Modal Elements
     const historyBtn = document.getElementById("historyBtn");
@@ -455,18 +457,13 @@
         return;
       }
 
-      // Add Element to Main List
       createTaskElement(name, mins);
-
-      // Save dynamic values to LocalStorage History
       saveTaskToHistory(name, mins);
 
-      // Update Statistics
       totalTasks++;
       totalMinutes += mins;
       updateDashboard();
 
-      // Reset Inputs
       taskInput.value = "";
       minsInput.value = "";
     });
@@ -517,12 +514,31 @@
       taskList.appendChild(li);
     }
 
-    // 3. Update Stats & Progress Bar
+    // 3. Dynamic Dashboard & Banner Update (المُعدلة لتصحيح النسبة والرسائل)
     function updateDashboard() {
       completedCount.textContent = `${completedTasks} / ${totalTasks}`;
       totalMins.textContent = `${totalMinutes} mins`;
+      
       const percentage = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
       progressBar.style.width = `${percentage}%`;
+
+      if (totalTasks === 0) {
+        feedbackBanner.textContent = "🚀 Add your first task to start!";
+        feedbackBanner.style.backgroundColor = "#eff6ff";
+        feedbackBanner.style.color = "#1e40af";
+      } else if (percentage === 100) {
+        feedbackBanner.textContent = "🎉 Great job! All tasks completed!";
+        feedbackBanner.style.backgroundColor = "#ecfdf5";
+        feedbackBanner.style.color = "#047857";
+      } else if (percentage >= 50) {
+        feedbackBanner.textContent = "👍 You are making good progress! Keep going!";
+        feedbackBanner.style.backgroundColor = "#fefce8";
+        feedbackBanner.style.color = "#a16207";
+      } else {
+        feedbackBanner.textContent = "⚠️ Completion rate is low! Work harder to reach your goal!";
+        feedbackBanner.style.backgroundColor = "#fef2f2";
+        feedbackBanner.style.color = "#991b1b";
+      }
     }
 
     // 4. Save Task to LocalStorage
@@ -547,7 +563,7 @@
       localStorage.setItem("studyHistory", JSON.stringify(fullHistory));
     }
 
-    // 5. Open Modal
+    // 5. Open Modal Logic
     historyBtn.onclick = function() {
       historyModal.style.display = "flex";
       populateYearDropdown();
@@ -563,7 +579,6 @@
       }
     };
 
-    // Populate Year Filter
     function populateYearDropdown() {
       const fullHistory = JSON.parse(localStorage.getItem("studyHistory")) || [];
       const years = [...new Set(fullHistory.map(item => item.year))];
@@ -583,7 +598,6 @@
       });
     }
 
-    // Filter Year -> Enable Month
     yearSelect.onchange = function() {
       const selectedYear = this.value;
       monthSelect.innerHTML = '<option value="">Select Month</option>';
@@ -611,7 +625,6 @@
       monthSelect.disabled = false;
     };
 
-    // Filter Month -> Enable Day
     monthSelect.onchange = function() {
       const selectedYear = yearSelect.value;
       const selectedMonth = this.value;
@@ -637,7 +650,6 @@
       daySelect.disabled = false;
     };
 
-    // Filter Day -> Show Cards & Calculated Time
     daySelect.onchange = function() {
       const selectedYear = yearSelect.value;
       const selectedMonth = monthSelect.value;
@@ -662,7 +674,6 @@
         return;
       }
 
-      // Calculate Total Time
       const totalMinsForDay = filtered.reduce((acc, curr) => acc + (curr.duration || 0), 0);
       const hrs = Math.floor(totalMinsForDay / 60);
       const mins = totalMinsForDay % 60;
